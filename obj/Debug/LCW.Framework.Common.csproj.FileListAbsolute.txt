@@ -1,0 +1,7 @@
+F:\WorkPlace\AutoCode\LCW.Common\bin\Debug\LCW.Framework.Common.dll
+F:\WorkPlace\AutoCode\LCW.Common\bin\Debug\LCW.Framework.Common.pdb
+F:\WorkPlace\AutoCode\Reference\LCW.Framework.Common.dll
+F:\WorkPlace\AutoCode\Reference\LCW.Framework.Common.pdb
+F:\WorkPlace\AutoCode\LCW.Common\obj\Debug\ResolveAssemblyReference.cache
+F:\WorkPlace\AutoCode\LCW.Common\obj\Debug\LCW.Framework.Common.dll
+F:\WorkPlace\AutoCode\LCW.Common\obj\Debug\LCW.Framework.Common.pdb

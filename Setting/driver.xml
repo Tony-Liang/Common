@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Drivers>
+<Driver>
+<Description>Microsoft SQL Server</Description>
+<ConnectionString>Provider=SQLOLEDB.1;Persist Security Info=False;User ID=sa;Initial Catalog=Northwind;Data Source=localhost</ConnectionString>
+</Driver>
+<Driver>
+<Description>MySQL2</Description>
+<ConnectionString>Database=cts;Data Source=127.0.0.1;User Id=root;Password=root;</ConnectionString>
+</Driver>
+<Driver>
+<Description>SQLite</Description>
+<ConnectionString>Data Source=database.db;New=False;Compress=True;Synchronous=Off</ConnectionString>
+</Driver>
+</Drivers>
