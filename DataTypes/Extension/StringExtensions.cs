@@ -20,9 +20,9 @@ namespace LCW.Framework.Common.DataTypes.Extension
             return Input.Substring(Input.Length - Length, Length);
         }
 
-        public static byte[] ToByteArray(this string Input, Encoding EncodingUsing = null)
+        public static byte[] ToByteArray(this string Input, Encoding EncodingUsing)
         {
-            return string.IsNullOrEmpty(Input) ? null : EncodingUsing.NullCheck(new UTF8Encoding()).GetBytes(Input);
+            return string.IsNullOrEmpty(Input) ? null : EncodingUsing==null?(new UTF8Encoding()).GetBytes(Input):EncodingUsing.GetBytes(Input);
         }
     }
 }
