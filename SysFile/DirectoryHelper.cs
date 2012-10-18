@@ -125,5 +125,45 @@ namespace LCW.Framework.Common.SysFile
                 return true;
             }
         }
+
+        public static bool CopyDirectory(string sourcePath, string destinationPath)
+        {
+            return CopyDirectory(sourcePath, destinationPath, true);
+        }
+
+        public static bool CopyDirectory(string sourcePath, string destinationPath, bool overwriteexisting)
+        {
+            bool ret = false;
+            try
+            {
+                sourcePath = sourcePath.EndsWith(@"\") ? sourcePath : sourcePath + @"\";
+                destinationPath = destinationPath.EndsWith(@"\") ? destinationPath : destinationPath + @"\";
+
+                if (IsExistDirectory(sourcePath))
+                {
+                    if (IsExistDirectory(destinationPath) == false)
+                        Directory.CreateDirectory(destinationPath);
+
+                    foreach (string fls in Directory.GetFiles(sourcePath))
+                    {
+                        FileInfo flinfo = new FileInfo(fls);
+                        flinfo.CopyTo(destinationPath + flinfo.Name, overwriteexisting);
+                    }
+                    foreach (string drs in Directory.GetDirectories(sourcePath))
+                    {
+                        DirectoryInfo drinfo = new DirectoryInfo(drs);
+                        if (CopyDirectory(drs, destinationPath + drinfo.Name, overwriteexisting) == false)
+                            ret = false;
+                    }
+                }
+                ret = true;
+            }
+            catch (Exception ex)
+            {
+                CooperationWrapper.WriteLog(ex);
+                ret = false;
+            }
+            return ret;
+        }
     }
 }
