@@ -41,6 +41,7 @@
       <HintPath>bin\Debug\mysql.data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
@@ -91,6 +92,7 @@
     <Compile Include="Serialization\NetDataContractSerializerWrapper.cs" />
     <Compile Include="Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="Serialization\XmlSerializerWrapper.cs" />
+    <Compile Include="Util\AppSettingsHelper.cs" />
     <Compile Include="Util\Calendar.cs" />
     <Compile Include="Util\Captcha.cs" />
     <Compile Include="Util\ConvertHelper.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Util\StringHelper.cs" />
     <Compile Include="Util\SysHelper.cs" />
     <Compile Include="Util\TimeSpanParseRuleAttribute.cs" />
+    <Compile Include="Web\RequestHelper.cs" />
     <Compile Include="WMI\DiskInfo.cs" />
     <Compile Include="WMI\IpInfo.cs" />
     <Compile Include="WMI\ProcessInfo.cs" />
