@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="itextsharp, Version=5.1.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Reference\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="mysql.data, Version=6.4.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\mysql.data.dll</HintPath>
@@ -87,6 +91,28 @@
     <Compile Include="Serialization\NetDataContractSerializerWrapper.cs" />
     <Compile Include="Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="Serialization\XmlSerializerWrapper.cs" />
+    <Compile Include="Util\Calendar.cs" />
+    <Compile Include="Util\Captcha.cs" />
+    <Compile Include="Util\ConvertHelper.cs" />
+    <Compile Include="Util\CsvHelper.cs" />
+    <Compile Include="Util\EcanConvertToCh.cs" />
+    <Compile Include="Util\FTPHelper.cs" />
+    <Compile Include="Util\ImageHelper.cs" />
+    <Compile Include="Util\INIFile.cs" />
+    <Compile Include="Util\JsonHelper.cs" />
+    <Compile Include="Util\MediaHandlerHelper.cs" />
+    <Compile Include="Util\NetHelper.cs" />
+    <Compile Include="Util\ObjectUtils.cs" />
+    <Compile Include="Util\PDFOperation.cs" />
+    <Compile Include="Util\PropertiesParser.cs" />
+    <Compile Include="Util\RandomHelper.cs" />
+    <Compile Include="Util\RegexHelper.cs" />
+    <Compile Include="Util\RmbHelper.cs" />
+    <Compile Include="Util\SegList.cs" />
+    <Compile Include="Util\SmtpServerHelper.cs" />
+    <Compile Include="Util\StringHelper.cs" />
+    <Compile Include="Util\SysHelper.cs" />
+    <Compile Include="Util\TimeSpanParseRuleAttribute.cs" />
     <Compile Include="WMI\DiskInfo.cs" />
     <Compile Include="WMI\IpInfo.cs" />
     <Compile Include="WMI\ProcessInfo.cs" />
