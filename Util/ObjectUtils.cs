@@ -106,8 +106,8 @@ namespace LCW.Framework.Common.Util
 				}
 				catch (Exception nfe)
 				{
-				    //throw new SchedulerConfigException(string.Format(CultureInfo.InvariantCulture, "Could not parse property '{0}' into correct data type: {1}", name, nfe.Message), nfe);
-				}
+                    throw nfe;    
+                }
 			}
 		}
 
@@ -132,8 +132,8 @@ namespace LCW.Framework.Common.Util
 				}
 				catch (Exception nfe)
 				{
-					//throw new SchedulerConfigException(string.Format(CultureInfo.InvariantCulture, "Could not parse property '{0}' into correct data type: {1}", name, nfe.Message    ), nfe);
-				}
+                    throw nfe;	
+                }
 			}
 		}
 
