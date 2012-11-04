@@ -96,6 +96,7 @@
     <Compile Include="Util\AppSettingsHelper.cs" />
     <Compile Include="Util\Calendar.cs" />
     <Compile Include="Util\Captcha.cs" />
+    <Compile Include="Util\ConfigurationHelper.cs" />
     <Compile Include="Util\ConvertHelper.cs" />
     <Compile Include="Util\CsvHelper.cs" />
     <Compile Include="Util\EcanConvertToCh.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Util\RegexHelper.cs" />
     <Compile Include="Util\RmbHelper.cs" />
     <Compile Include="Util\SegList.cs" />
+    <Compile Include="Util\SerializableDictionary.cs" />
     <Compile Include="Util\SmtpServerHelper.cs" />
     <Compile Include="Util\StringHelper.cs" />
     <Compile Include="Util\SysHelper.cs" />

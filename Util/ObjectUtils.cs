@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace LCW.Framework.Common.Util
 {
@@ -76,19 +77,36 @@ namespace LCW.Framework.Common.Util
 		/// Instantiates an instance of the type specified.
 		/// </summary>
 		/// <returns></returns>
-		public static T InstantiateType<T>(Type type)
+		public static T InstantiateType<T>()
 		{
+            return InstantiateType<T>(null);
+		}
+
+        public static T InstantiateType<T>(IDictionary<Type,object> dictionary)
+        {
+            Type type = typeof(T);
             if (type == null)
             {
                 throw new ArgumentNullException("type", "Cannot instantiate null");
             }
-            ConstructorInfo ci = type.GetConstructor(Type.EmptyTypes);
-			if (ci == null)
-			{
+
+            List<Type> types = new List<Type>();
+            List<object> parameters = new List<object>();
+            if (dictionary != null)
+            {
+                foreach (var obj in dictionary)
+                {
+                    types.Add(obj.Key);
+                    parameters.Add(obj.Value);
+                }
+            }
+            ConstructorInfo ci = type.GetConstructor(types.ToArray());
+            if (ci == null)
+            {
                 throw new ArgumentException("Cannot instantiate type which has no empty constructor", type.Name);
-			}
-			return (T) ci.Invoke(new object[0]);
-		}
+            }
+            return (T)ci.Invoke(parameters.ToArray());
+        }
 
 	    /// <summary>
 		/// Sets the object properties using reflection.
@@ -199,5 +217,4 @@ namespace LCW.Framework.Common.Util
 	        return typeToExamine.GetCustomAttributes(attributeType, true).Length > 0;
 	    }
 	}
-
 }

@@ -99,7 +99,7 @@ namespace LCW.Framework.Common.SysFile
                 {
                     CooperationWrapper.WriteLog(ex);
                 }
-                return info == null;
+                return info == null?false:true;
             }
         }
 

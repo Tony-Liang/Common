@@ -208,5 +208,29 @@ namespace LCW.Framework.Common.SysFile
                 CooperationWrapper.WriteLog(ex);
             }
         }
+
+        public static bool WriteFile(byte[] bytes, string filename)
+        {
+            FileStream stream = null;
+            try
+            {
+                using (stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                {
+                    stream.Write(bytes, 0, bytes.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Close();
+                }
+            }
+            return true;
+        }
     }
 }
