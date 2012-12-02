@@ -118,10 +118,11 @@ namespace LCW.Framework.Common.Util
         /// <returns>Int</returns>
         private static int getInt32(string key, int? defaultValue)
         {
-            return getValue<int>(key, (v, pv) => int.TryParse(v, out pv), defaultValue);
+            return getValue<int>(key, delegate(string v, out int pv) { return int.TryParse(v, out pv); }, defaultValue);
         }
 
         #endregion
+        public delegate bool ParseValue<T>(string value, out T parsedValue);
 
         #region GetBoolean
 
@@ -154,7 +155,7 @@ namespace LCW.Framework.Common.Util
         /// <returns>布尔值</returns>
         private static bool getBoolean(string key, bool? defaultValue)
         {
-            return getValue<bool>(key, (v, pv) => bool.TryParse(v, out pv), defaultValue);
+            return getValue<bool>(key, delegate(string v, out bool pv) { return bool.TryParse(v, out pv); }, defaultValue);
         }
 
         #endregion
@@ -199,7 +200,7 @@ namespace LCW.Framework.Common.Util
         /// <param name="parseValue">将指定索引键的值转化为返回类型的值的委托方法</param>
         /// <param name="defaultValue">默认值</param>
         /// <returns></returns>
-        private static T getValue<T>(string key, Func<string, T, bool> parseValue, T? defaultValue) where T : struct
+        private static T getValue<T>(string key,ParseValue<T> parseValue, T? defaultValue) where T : struct
         {
             string value = appSettings[key];
 
@@ -207,7 +208,7 @@ namespace LCW.Framework.Common.Util
             {
                 T parsedValue = default(T);
 
-                if (parseValue(value, parsedValue))
+                if (parseValue(value,out parsedValue))
                     return parsedValue;
                 else
                     throw new ApplicationException(string.Format("Setting '{0}' was not a valid {1}", key, typeof(T).FullName));

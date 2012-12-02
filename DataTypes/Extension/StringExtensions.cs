@@ -24,5 +24,35 @@ namespace LCW.Framework.Common.DataTypes.Extension
         {
             return string.IsNullOrEmpty(Input) ? null : EncodingUsing==null?(new UTF8Encoding()).GetBytes(Input):EncodingUsing.GetBytes(Input);
         }
+
+        public static int ToInt(this string Input)
+        {
+            int result;
+            if (int.TryParse(Input, out result))
+            {
+                
+            }
+            return result;
+        }
+
+        public static float ToFloat(this string Input)
+        {
+            float result;
+            if (float.TryParse(Input, out result))
+            {
+
+            }
+            return result;
+        }
+
+        public static double ToDouble(this string Input)
+        {
+            double result;
+            if (double.TryParse(Input, out result))
+            {
+
+            }
+            return result;
+        }
     }
 }
