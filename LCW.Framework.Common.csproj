@@ -78,6 +78,12 @@
     <Compile Include="DataAccess\GeneralizeWrapper\SQLServer.cs" />
     <Compile Include="DataAccess\Mysql\MysqlDatabase.cs" />
     <Compile Include="DataAccess\RefCountingDataReader.cs" />
+    <Compile Include="DataAccess\Schema\DBSchemaProvider.cs" />
+    <Compile Include="DataAccess\Schema\Mysql\MySqlProvider.cs" />
+    <Compile Include="DataAccess\Schema\SchemaBase.cs" />
+    <Compile Include="DataAccess\Schema\SchemaProviderBase.cs" />
+    <Compile Include="DataAccess\Schema\Sql\SqlProvider.cs" />
+    <Compile Include="DataAccess\Schema\TableSchema.cs" />
     <Compile Include="DataAccess\Sql\SqlDatabase.cs" />
     <Compile Include="DataAccess\TransactionScopeConnections.cs" />
     <Compile Include="DataAccess\WrappedAsyncOperation.cs" />
@@ -90,7 +96,9 @@
     <Compile Include="DEncrypt\RSACryption.cs" />
     <Compile Include="Driver\DBDriver.cs" />
     <Compile Include="ExpressionHelper.cs" />
+    <Compile Include="NHibernate\IRepository.cs" />
     <Compile Include="NHibernate\NHibernateSessionManager.cs" />
+    <Compile Include="NHibernate\NHSessionManager.cs" />
     <Compile Include="SysFile\DirectoryHelper.cs" />
     <Compile Include="SysFile\FileHelper.cs" />
     <Compile Include="ObjectCloner.cs" />
