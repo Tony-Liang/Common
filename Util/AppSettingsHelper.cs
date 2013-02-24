@@ -36,8 +36,7 @@ namespace LCW.Framework.Common.Util
         public static string GetString(string key, string defaultValue)
         {
             return getValue(key, false, defaultValue);
-        }
-
+        }     
         #endregion
 
         #region GetStringArray

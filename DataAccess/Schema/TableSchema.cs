@@ -26,8 +26,8 @@ namespace LCW.Framework.Common.DataAccess.Schema
     [Serializable]
     public class ViewSchema : SchemaBase
     {
-        public ViewSchema(string name)
-            : base(name,"")
+        public ViewSchema(string name,string description)
+            : base(name,description)
         {
         }
     }
@@ -35,8 +35,8 @@ namespace LCW.Framework.Common.DataAccess.Schema
     [Serializable]
     public class ProceduresSchema : SchemaBase
     {
-        public ProceduresSchema(string name)
-            : base(name,"")
+        public ProceduresSchema(string name, string description)
+            : base(name,description)
         {
         }
     }
@@ -44,8 +44,8 @@ namespace LCW.Framework.Common.DataAccess.Schema
     [Serializable]
     public class TriggersSchema : SchemaBase
     {
-        public TriggersSchema(string name)
-            : base(name,"")
+        public TriggersSchema(string name, string description)
+            : base(name,description)
         {
         }
     }

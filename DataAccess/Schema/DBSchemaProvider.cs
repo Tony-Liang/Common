@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LCW.Framework.Common.Util;
 
 namespace LCW.Framework.Common.DataAccess.Schema
 {
-    public class DBSchemaProvider<T> where T : SchemaProviderBase
+    public class DBSchemaProvider
     {
-        private static T provider;
+        private static SchemaProviderBase provider;
 
-        public static T GetInstance()
+        public static SchemaProviderBase GetInstance()
         {
             if (provider == null)
             {
                 try
                 {
-                    provider =(T)Activator.CreateInstance(typeof(T),true);
+                    string typename = AppSettingsHelper.GetString("SchemaProvider", "LCW.Framework.Common.DataAccess.Schema.Sql.SqlProvider");
+                    provider = Instance(typename);
                 }
                 catch (Exception ex)
                 {
@@ -24,7 +26,24 @@ namespace LCW.Framework.Common.DataAccess.Schema
             }
             return provider;
         }
+
+        private static SchemaProviderBase Instance(string classname)
+        {
+            try
+            {
+                Type type = Type.GetType(classname);
+                provider = (SchemaProviderBase)Activator.CreateInstance(type, true);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return provider;
+        }
+
+        public static SchemaProviderBase NewInstance(string classname)
+        {
+            return Instance(classname);
+        }
     }
-
-
 }

@@ -46,8 +46,9 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
                     list = new List<TableSchema>();
                     foreach (DataRow table in tables.Rows)
                     {
-                        string name=string.Format("{0}.{1}", table["TABLE_SCHEMA"], table["TABLE_NAME"]);
-                        TableSchema t = new TableSchema(name, name);
+                        string name=string.Format("{0}",table["TABLE_NAME"]);
+                        string des=string.Format("{0}.{1}", table["TABLE_SCHEMA"], table["TABLE_NAME"]);
+                        TableSchema t = new TableSchema(name,des);
                         list.Add(t);
                     }
                 }
@@ -67,8 +68,9 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
                     list = new List<ViewSchema>();
                     foreach (DataRow table in views.Rows)
                     {
-                        string name = string.Format("{0}.{1}", table["TABLE_SCHEMA"], table["TABLE_NAME"]);
-                        ViewSchema view = new ViewSchema(name);
+                        string name = string.Format("{0}", table["TABLE_NAME"]);
+                        string des = string.Format("{0}.{1}", table["TABLE_SCHEMA"], table["TABLE_NAME"]);
+                        ViewSchema view = new ViewSchema(name,des);
                         list.Add(view);
                     }
                 }
@@ -88,8 +90,9 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
                     list = new List<ProceduresSchema>();
                     foreach (DataRow procedure in procedures.Rows)
                     {
-                        string name=string.Format("{0}.{1}", procedure["SPECIFIC_SCHEMA"], procedure["SPECIFIC_NAME"]);
-                        ProceduresSchema proc = new ProceduresSchema(name);
+                        string name = string.Format("{0}", procedure["SPECIFIC_NAME"]);
+                        string des=string.Format("{0}.{1}", procedure["SPECIFIC_SCHEMA"], procedure["SPECIFIC_NAME"]);
+                        ProceduresSchema proc = new ProceduresSchema(name,des);
                         list.Add(proc);
                     }
                 }
@@ -123,6 +126,28 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
                 }
             }
             return list;
+        }
+
+        public override bool CheckConnection(System.Data.Common.DbConnectionStringBuilder connectionstr)
+        {
+            bool flag = false;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionstr.ConnectionString))
+                {
+                    connection.Open();
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        flag = true;
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return flag;
         }
     }
 }

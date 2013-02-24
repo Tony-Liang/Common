@@ -17,7 +17,7 @@ namespace LCW.Framework.Common.DataAccess.Schema
             {
                 return connectionstringbuilder;
             }
-            protected set
+            set
             {
                 connectionstringbuilder = value;
             }
@@ -29,8 +29,36 @@ namespace LCW.Framework.Common.DataAccess.Schema
         public abstract IList<ViewSchema> GetViews(DbConnectionStringBuilder connectionstr);
         public abstract IList<ProceduresSchema> GetProcedures(DbConnectionStringBuilder connectionstr);
         public abstract IList<TriggersSchema> GetTriggers(DbConnectionStringBuilder connectionstr);
+        public abstract bool CheckConnection(DbConnectionStringBuilder connectionstr);
 
-
+        public virtual bool CheckConnection()
+        {
+            return this.CheckConnection(this.connectionstringbuilder);
+        }
+        public virtual IList<DataBaseSchema> GetDataBases()
+        {
+            return this.GetDataBases(this.connectionstringbuilder);
+        }
+        public virtual IList<TableSchema> GetTables()
+        {
+            return this.GetTables(this.connectionstringbuilder);
+        }
+        public virtual IList<ColumnSchema> GetColumns(string tablename)
+        {
+            return this.GetColumns(this.connectionstringbuilder, tablename);
+        }
+        public virtual IList<ViewSchema> GetViews()
+        {
+            return this.GetViews(this.connectionstringbuilder);
+        }
+        public virtual IList<ProceduresSchema> GetProcedures()
+        {
+            return this.GetProcedures(this.connectionstringbuilder);
+        }
+        public virtual IList<TriggersSchema> GetTriggers()
+        {
+            return this.GetTriggers(this.connectionstringbuilder);
+        }
     }
 
     public static class DbConnectionStringBuilderExtend
@@ -63,6 +91,16 @@ namespace LCW.Framework.Common.DataAccess.Schema
                 return new string[] { sqltemp.InitialCatalog };
             }
             return new string[] { null };
+        }
+        public static string ServiceName(this DbConnectionStringBuilder builder)
+        {
+            if (builder is MySql.Data.MySqlClient.MySqlConnectionStringBuilder)
+            {
+                MySql.Data.MySqlClient.MySqlConnectionStringBuilder temp = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder(builder.ConnectionString);
+                return temp.Server;
+            }
+            SqlConnectionStringBuilder sqltemp = new SqlConnectionStringBuilder(builder.ConnectionString);
+            return sqltemp.DataSource;
         }
     }
 
