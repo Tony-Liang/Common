@@ -110,7 +110,7 @@ namespace LCW.Framework.Common.DataAccess.Schema.Mysql
         public override IList<ColumnSchema> GetColumns(System.Data.Common.DbConnectionStringBuilder connectionstr, string tablename)
         {
             IList<ColumnSchema> list = null;
-            using (MySqlConnection connection = new MySqlConnection(this.ConnectionStringBuilder.ConnectionString))
+            using (MySqlConnection connection = new MySqlConnection(connectionstr.ConnectionString))
             {
                 connection.Open();
                 DataTable columns = connection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, null, tablename, null });

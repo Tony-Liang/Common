@@ -108,7 +108,7 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
         public override IList<ColumnSchema> GetColumns(System.Data.Common.DbConnectionStringBuilder connectionstr,string tablename)
         {
             IList<ColumnSchema> list = null;
-            using (SqlConnection connection = new SqlConnection(this.ConnectionStringBuilder.ConnectionString))
+            using (SqlConnection connection = new SqlConnection(connectionstr.ConnectionString))
             {
                 connection.Open();
                 DataTable columns = connection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, null, tablename, null });
