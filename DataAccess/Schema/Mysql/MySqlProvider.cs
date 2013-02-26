@@ -64,7 +64,7 @@ namespace LCW.Framework.Common.DataAccess.Schema.Mysql
             using (MySqlConnection connection = new MySqlConnection(connectionstr.ConnectionString))
             {
                 connection.Open();
-                DataTable views = connection.GetSchema(SqlClientMetaDataCollectionNames.Tables, new string[] { null, null, null, "View" });
+                DataTable views = connection.GetSchema(SqlClientMetaDataCollectionNames.Views, new string[] { null, null, null,null});
                 if (views != null && views.Rows.Count > 0)
                 {
                     list = new List<ViewSchema>();
@@ -104,7 +104,25 @@ namespace LCW.Framework.Common.DataAccess.Schema.Mysql
 
         public override IList<TriggersSchema> GetTriggers(System.Data.Common.DbConnectionStringBuilder connectionstr)
         {
-            throw new NotImplementedException();
+            IList<TriggersSchema> list = null;
+            using (MySqlConnection connection = new MySqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SHOW TRIGGERS";//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.Text;
+                MySqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    list = new List<TriggersSchema>();
+                    while (reader.Read())
+                    {
+                        string name = reader["Trigger"].ToString();
+                        list.Add(new TriggersSchema(name, name));
+                    }
+                }  
+            }
+            return list;
         }
 
         public override IList<ColumnSchema> GetColumns(System.Data.Common.DbConnectionStringBuilder connectionstr, string tablename)
@@ -151,5 +169,68 @@ namespace LCW.Framework.Common.DataAccess.Schema.Mysql
             }
             return flag;
         }
+
+        public override string OpenProcedure(System.Data.Common.DbConnectionStringBuilder connectionstr,string procedure)
+        {
+            string message = string.Empty;
+            using (MySqlConnection connection = new MySqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "show create procedure "+procedure;
+                cmd.CommandType = CommandType.Text;
+                MySqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message = reader["Create Procedure"].ToString();
+                    }
+                }
+            }
+            return message;
+        }
+
+        public override string OpenTriggers(System.Data.Common.DbConnectionStringBuilder connectionstr,string triggers)
+        {
+            string message = string.Empty;
+            using (MySqlConnection connection = new MySqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SHOW CREATE TRIGGER " + triggers;
+                cmd.CommandType = CommandType.Text;
+                MySqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message = reader["SQL Original Statement"].ToString();
+                    }
+                }
+            }
+            return message;
+        }
+
+        public override string OpenView(System.Data.Common.DbConnectionStringBuilder connectionstr,string view)
+        {
+            string message = string.Empty;
+            using (MySqlConnection connection = new MySqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SHOW CREATE View " + view;
+                cmd.CommandType = CommandType.Text;
+                MySqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message = reader["Create View"].ToString();
+                    }
+                }
+            }
+            return message;
+        }      
     }
 }

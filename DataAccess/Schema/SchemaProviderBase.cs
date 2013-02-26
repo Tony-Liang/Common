@@ -30,6 +30,10 @@ namespace LCW.Framework.Common.DataAccess.Schema
         public abstract IList<ProceduresSchema> GetProcedures(DbConnectionStringBuilder connectionstr);
         public abstract IList<TriggersSchema> GetTriggers(DbConnectionStringBuilder connectionstr);
         public abstract bool CheckConnection(DbConnectionStringBuilder connectionstr);
+        public abstract string OpenProcedure(DbConnectionStringBuilder connectionstr,string procedure);
+        public abstract string OpenTriggers(DbConnectionStringBuilder connectionstr,string triggers);
+        public abstract string OpenView(DbConnectionStringBuilder connectionstr,string view);
+
 
         public virtual bool CheckConnection()
         {
@@ -58,6 +62,18 @@ namespace LCW.Framework.Common.DataAccess.Schema
         public virtual IList<TriggersSchema> GetTriggers()
         {
             return this.GetTriggers(this.connectionstringbuilder);
+        }
+        public virtual string OpenProcedure(string procedure)
+        {
+            return OpenProcedure(this.ConnectionStringBuilder, procedure);
+        }
+        public virtual string OpenTriggers(string triggers)
+        {
+            return OpenTriggers(this.ConnectionStringBuilder, triggers);
+        }
+        public virtual string OpenView(string view)
+        {
+            return OpenView(this.ConnectionStringBuilder, view);
         }
     }
 

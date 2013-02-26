@@ -102,7 +102,25 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
 
         public override IList<TriggersSchema> GetTriggers(System.Data.Common.DbConnectionStringBuilder connectionstr)
         {
-            throw new NotImplementedException();
+            IList<TriggersSchema> list = null;
+            using (SqlConnection connection = new SqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "select * from sys.triggers";//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.Text;
+                SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader!=null && reader.HasRows)
+                {
+                    list = new List<TriggersSchema>();
+                    while (reader.Read())
+                    {
+                        string name = reader["name"].ToString();
+                        list.Add(new TriggersSchema(name, name));
+                    }
+                }                
+            }
+            return list;
         }
 
         public override IList<ColumnSchema> GetColumns(System.Data.Common.DbConnectionStringBuilder connectionstr,string tablename)
@@ -148,6 +166,69 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
                 throw ex;
             }
             return flag;
+        }
+
+        public override string OpenProcedure(System.Data.Common.DbConnectionStringBuilder connectionstr,string procedure)
+        {
+            string message = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "exec sp_helptext "+procedure;//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message=reader["Text"].ToString();
+                    }
+                }
+            }
+            return message;
+        }
+
+        public override string OpenTriggers(System.Data.Common.DbConnectionStringBuilder connectionstr,string triggers)
+        {
+            string message = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "exec sp_helptext " + triggers;//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message = reader["Text"].ToString();
+                    }
+                }
+            }
+            return message;
+        }
+
+        public override string OpenView(System.Data.Common.DbConnectionStringBuilder connectionstr,string view)
+        {
+            string message = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionstr.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "exec sp_helptext " + view;//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.StoredProcedure;
+                SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message = reader["Text"].ToString();
+                    }
+                }
+            }
+            return message;
         }
     }
 }
