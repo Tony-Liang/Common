@@ -175,14 +175,14 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
             {
                 connection.Open();
                 SqlCommand cmd = connection.CreateCommand();
-                cmd.CommandText = "exec sp_helptext "+procedure;//"select * FROM SysObjects where xtype='TR'";
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = string.Format("select text from syscomments where id=object_id('{0}')", procedure);//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.Text;
                 SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 if (reader != null && reader.HasRows)
                 {
                     if (reader.Read())
                     {
-                        message=reader["Text"].ToString();
+                        message=reader["text"].ToString();
                     }
                 }
             }
@@ -196,14 +196,14 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
             {
                 connection.Open();
                 SqlCommand cmd = connection.CreateCommand();
-                cmd.CommandText = "exec sp_helptext " + triggers;//"select * FROM SysObjects where xtype='TR'";
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText =string.Format("select text from syscomments where id=object_id('{0}')",triggers); //"exec sp_helptext " + triggers;//"select * FROM SysObjects where xtype='TR'";
+                cmd.CommandType = CommandType.Text;
                 SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 if (reader != null && reader.HasRows)
                 {
                     if (reader.Read())
                     {
-                        message = reader["Text"].ToString();
+                        message = reader["text"].ToString();
                     }
                 }
             }
@@ -217,8 +217,8 @@ namespace LCW.Framework.Common.DataAccess.Schema.Sql
             {
                 connection.Open();
                 SqlCommand cmd = connection.CreateCommand();
-                cmd.CommandText = "exec sp_helptext " + view;//"select * FROM SysObjects where xtype='TR'";
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = string.Format("SELECT text FROM syscomments,sysobjects WHERE sysobjects.xtype='V' and syscomments.id=sysobjects.id and  sysobjects.name='{0}'", view);
+                cmd.CommandType = CommandType.Text;
                 SqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 if (reader != null && reader.HasRows)
                 {
