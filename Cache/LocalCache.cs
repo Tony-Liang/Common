@@ -7,5 +7,6 @@ namespace LCW.Framework.Common.Cache
 {
     class LocalCache
     {
+    
     }
 }

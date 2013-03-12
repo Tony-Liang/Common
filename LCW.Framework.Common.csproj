@@ -65,9 +65,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AOP\InterceptorAttribute.cs" />
+    <Compile Include="Cache\BackgroundScheduler.cs" />
+    <Compile Include="Cache\Cache.cs" />
+    <Compile Include="Cache\CacheItem.cs" />
+    <Compile Include="Cache\CacheItemPriority.cs" />
+    <Compile Include="Cache\CacheItemRemovedReason.cs" />
+    <Compile Include="Cache\CacheManager.cs" />
+    <Compile Include="Cache\ExpirationPollTimer.cs" />
+    <Compile Include="Cache\Expirations\AbsoluteTime.cs" />
+    <Compile Include="Cache\Expirations\ExtendedFormat.cs" />
+    <Compile Include="Cache\Expirations\ExtendedFormatTime.cs" />
+    <Compile Include="Cache\Expirations\FileDependency.cs" />
+    <Compile Include="Cache\Expirations\NeverExpired.cs" />
+    <Compile Include="Cache\Expirations\SlidingTime.cs" />
+    <Compile Include="Cache\ExpirationTask.cs" />
+    <Compile Include="Cache\ICacheItemExpiration.cs" />
+    <Compile Include="Cache\ICacheManager.cs" />
+    <Compile Include="Cache\ICacheOperations.cs" />
+    <Compile Include="Cache\ICacheScavenger.cs" />
     <Compile Include="Cache\LocalCache.cs" />
     <Compile Include="Cache\RemoteCache.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="CodeCompiler\CodeProvider.cs" />
+    <Compile Include="CodeCompiler\CSharpBuilder.cs" />
+    <Compile Include="CodeCompiler\ICodePrivoder.cs" />
     <Compile Include="CooperationWrapper.cs" />
     <Compile Include="DataAccess\ConnectionString.cs" />
     <Compile Include="DataAccess\DaabAsyncResult.cs" />
@@ -125,6 +146,7 @@
     <Compile Include="Serialization\NetDataContractSerializerWrapper.cs" />
     <Compile Include="Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="Serialization\XmlSerializerWrapper.cs" />
+    <Compile Include="SysFile\IsolatedStorageHelper.cs" />
     <Compile Include="Util\AppSettingsHelper.cs" />
     <Compile Include="Util\Calendar.cs" />
     <Compile Include="Util\Captcha.cs" />
