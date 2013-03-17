@@ -119,6 +119,7 @@
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="Genernation\DataBases\DataBaseSchema.cs" />
     <Compile Include="Genernation\DataBases\DbSchema.cs" />
+    <Compile Include="Genernation\DataBases\DbType.cs" />
     <Compile Include="Genernation\DataBases\Entities\BaseEntity.cs" />
     <Compile Include="Genernation\DataBases\Entities\ColumnEntity.cs" />
     <Compile Include="Genernation\DataBases\Entities\DataBaseEntity.cs" />
@@ -189,7 +190,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Setting\driver.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Setting\DbTargets.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Setting\Languages.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

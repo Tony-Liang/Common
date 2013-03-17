@@ -29,6 +29,10 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
             {
                 return this.description;
             }
+            internal set
+            {
+                description = value;
+            }
         }
 
         protected DbConnectionStringBuilder connectionstringbuilder;

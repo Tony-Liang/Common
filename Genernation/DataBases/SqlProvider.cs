@@ -162,8 +162,11 @@ namespace LCW.Framework.Common.Genernation.DataBases
                     dv.Sort = "ORDINAL_POSITION asc";
                     foreach (DataRowView view in dv)
                     {
-                        string name = string.Format("{0}({1})", view["COLUMN_NAME"], view["DATA_TYPE"]);
+                        string name = string.Format("{0}", view["COLUMN_NAME"]);
+                        string description = string.Format("{0}({1})", view["COLUMN_NAME"], view["DATA_TYPE"]);
                         ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder,name);
+                        column.Description = description;
+                        column.DataType = DbType.SqlParse(view["DATA_TYPE"].ToString());
                         column.Table = table;
                         list.Add(column);
                     }

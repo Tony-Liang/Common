@@ -26,5 +26,18 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
                 table = value;
             }
         }
+
+        private Type type;
+        public Type DataType
+        {
+            get
+            {
+                return type;
+            }
+            internal set
+            {
+                type = value;
+            }
+        }
     }
 }

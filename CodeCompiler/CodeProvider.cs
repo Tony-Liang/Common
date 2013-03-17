@@ -7,9 +7,9 @@ namespace LCW.Framework.Common.CodeCompiler
 {
     public class CodeProviderFactory
     {
-        public static ICodePrivoder GetInstance(string code)
+        public static ICodePrivoder GetInstance()
         {
-            return new CSharpBuilder(code);
+            return new CSharpBuilder();
         }
     }
 }

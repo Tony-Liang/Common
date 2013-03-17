@@ -9,102 +9,80 @@ using System.Reflection;
 
 namespace LCW.Framework.Common.CodeCompiler
 {
-    public class CSharpBuilder:ICodePrivoder
+    public class CSharpBuilder : ICodePrivoder
     {
-        public CSharpBuilder(string generateCode)
+        #region ICodePrivoder 成员
+        public CSharpBuilder()
         {
-            this.generateCode = generateCode;
-            referenceAssemblies = new List<string>();
-        }
-        private CSharpCodeProvider provider;
-        private ICodeCompiler objICodeCompiler;
-        private CompilerParameters objCompilerParameters;
 
-        private IList<string> referenceAssemblies;
-        public IList<string> ReferencedAssemblies
-        {
-            get
-            {
-                return referenceAssemblies;
-            }
-            set
-            {
-                referenceAssemblies = value;
-            }
-        }
-
-        private string generateCode;
-        public string GenerateCode
-        {
-            get
-            {
-                return generateCode;
-            }
-            set
-            {
-                generateCode = value;
-            }
-        }
-
-        public void init()
-        {
-            provider = new CSharpCodeProvider();
-            objICodeCompiler = provider.CreateCompiler();
-            objCompilerParameters = new CompilerParameters();
-            objCompilerParameters.ReferencedAssemblies.AddRange(referenceAssemblies.ToArray<string>());
-            objCompilerParameters.GenerateExecutable = false;
-            objCompilerParameters.GenerateInMemory = true;
-        }
-
-        private CompilerResults CompilerStart()
-        {
-            return objICodeCompiler.CompileAssemblyFromSource(objCompilerParameters, generateCode);
-        }
-
-        private void Building(Action<bool, CompilerResults> action)
-        {
-            CompilerResults result=CompilerStart();
-            if (result.Errors.HasErrors)
-            {
-                if (ErrorHandler != null)
-                    ErrorHandler(result.Errors);
-                action(false, result);
-            }
-            action(true, result);
-        }
-
-        public bool Debug()
-        {
-            bool flag = false;
-            Building((f,obj) =>
-            {
-                if (f)
-                    flag = true;
-            });
-            return flag;
         }
 
         public event CompilerHandler ErrorHandler;
+        private CompilerResults result;
 
-        public object Start(string ClassName)
+        public bool Build(string generateCode)
         {
-            object obj=null;
-            Building((f,result) =>
-            {
-                if (f)
-                {
-                    try
-                    {
-                        Assembly objAssembly = result.CompiledAssembly;
-                        obj = objAssembly.CreateInstance(ClassName);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                }
-            });
-            return obj;
+            return Build(generateCode, null);
         }
+
+        public bool Build(string generateCode, params string[] referenceAssemblies)
+        {
+            return init(generateCode, referenceAssemblies);
+        }
+
+        public Assembly Compile(string generateCode)
+        {
+            return Compile(generateCode, null);
+        }
+
+        public Assembly Compile(string generateCode, params string[] referenceAssemblies)
+        {
+            Assembly assmbly = null;
+            if (init(generateCode, referenceAssemblies))
+            {
+                assmbly = result.CompiledAssembly;
+            }
+            return assmbly;
+        }
+
+        public object CreateInstance(string typeName, string generateCode, params string[] referenceAssemblies)
+        {
+            object temp = null;
+            Assembly assmbly = Compile(generateCode, referenceAssemblies);
+            if (assmbly != null)
+            {
+                temp = assmbly.CreateInstance(typeName);
+            }
+            return temp;
+        }
+
+        private bool init(string generateCode, params string[] referenceAssemblies)
+        {
+            bool flag = false;
+            result = null;
+            using (CSharpCodeProvider provider = new CSharpCodeProvider())
+            {
+                ICodeCompiler objICodeCompiler = provider.CreateCompiler();
+                CompilerParameters objCompilerParameters = new CompilerParameters();
+                if (referenceAssemblies != null)
+                    objCompilerParameters.ReferencedAssemblies.AddRange(referenceAssemblies);
+                objCompilerParameters.GenerateExecutable = false;
+                objCompilerParameters.GenerateInMemory = true;
+                result = objICodeCompiler.CompileAssemblyFromSource(objCompilerParameters, generateCode);
+            }
+            if (result != null)
+            {
+                if (result.Errors.Count > 0 && ErrorHandler != null)
+                {
+                    ErrorHandler(result.Errors);
+                }
+                else
+                {
+                    flag = true;
+                }
+            }
+            return flag;
+        }
+        #endregion
     }
 }
