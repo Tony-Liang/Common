@@ -58,6 +58,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -89,6 +90,9 @@
     <Compile Include="CodeCompiler\CodeProvider.cs" />
     <Compile Include="CodeCompiler\CSharpBuilder.cs" />
     <Compile Include="CodeCompiler\ICodePrivoder.cs" />
+    <Compile Include="CodeCompiler\RazorEngine.cs" />
+    <Compile Include="CodeCompiler\RazorEngineFactory.cs" />
+    <Compile Include="CodeCompiler\RazorTemplateBase.cs" />
     <Compile Include="CooperationWrapper.cs" />
     <Compile Include="DataAccess\ConnectionString.cs" />
     <Compile Include="DataAccess\DaabAsyncResult.cs" />
@@ -131,6 +135,9 @@
     <Compile Include="Genernation\DataBases\ProviderBuilder.cs" />
     <Compile Include="Genernation\DataBases\ServiceSite.cs" />
     <Compile Include="Genernation\DataBases\SqlProvider.cs" />
+    <Compile Include="Ioc\Container.cs" />
+    <Compile Include="Ioc\IContainer.cs" />
+    <Compile Include="Ioc\IocManager.cs" />
     <Compile Include="NHibernate\IRepository.cs" />
     <Compile Include="NHibernate\NHibernateSessionManager.cs" />
     <Compile Include="NHibernate\NHSessionManager.cs" />
@@ -196,6 +203,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Setting\Languages.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

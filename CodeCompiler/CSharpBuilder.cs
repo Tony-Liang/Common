@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace LCW.Framework.Common.CodeCompiler
 {
-    public class CSharpBuilder : ICodePrivoder
+    internal class CSharpBuilder : ICodePrivoder
     {
         #region ICodePrivoder 成员
         public CSharpBuilder()
