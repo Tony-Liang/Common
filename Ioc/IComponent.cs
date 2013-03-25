@@ -5,8 +5,10 @@ using System.Text;
 
 namespace LCW.Framework.Common.Ioc
 {
-    public interface IContainer :IResolve
+    public interface IComponent
     {
-        
+        IComponent Implement<T>();
+        IComponent Name(string name);
     }
+
 }

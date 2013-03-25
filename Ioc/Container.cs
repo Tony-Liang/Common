@@ -6,53 +6,51 @@ using System.Reflection;
 
 namespace LCW.Framework.Common.Ioc
 {
-    internal class Container:IContainer
+    internal class Container : IContainer
     {
-        private readonly IDictionary<Type, Type> types = new Dictionary<Type, Type>();
-        private readonly IDictionary<Type, object> typeInstances = new Dictionary<Type, object>();
+        internal readonly Multimap<Type, Component> typeInstances = new Multimap<Type, Component>();
 
-        public Container()
+        private ComponentFactory componentfactory;
+
+        public Container(ComponentFactory componentfactory)
         {
-            
+            this.componentfactory = componentfactory;
+            this.componentfactory.Container = this;
         }
 
+        #region IContainer 成员
         public T Resolve<T>()
         {
-            return (T)Resolve(typeof(T));
+            return (T)Resolve(typeInstances[typeof(T)].First());
         }
 
-        public void Register<TContract, TImplementation>() where TImplementation : TContract
+        public T Resolve<T>(string name)
         {
-            types[typeof(TContract)] = typeof(TImplementation);
-        }
-
-        public void Register<TContract, TImplementation>(TImplementation instance)where TImplementation : TContract
-        {
-            typeInstances[typeof(TContract)] = instance;
-        }
-
-        private object Resolve(Type contract)
-        {
-            if (typeInstances.ContainsKey(contract))
+            return (T)Resolve(typeInstances[typeof(T)].FirstOrDefault((p) =>
             {
-                return typeInstances[contract];
-            }
-            else
-            {
-                Type implementation = types[contract];
-                ConstructorInfo constructor = implementation.GetConstructors()[0];
-                ParameterInfo[] constructorParameters = constructor.GetParameters();
-                if (constructorParameters.Length == 0)
-                {
-                    return Activator.CreateInstance(implementation);
-                }
-                List<object> parameters = new List<object>(constructorParameters.Length);
-                foreach (ParameterInfo parameterInfo in constructorParameters)
-                {
-                    parameters.Add(Resolve(parameterInfo.ParameterType));
-                }
-                return constructor.Invoke(parameters.ToArray());
-            }
+                if (p.Alias.Equals(name))
+                    return true;
+                return false;
+            }));
+        }
+        #endregion
+
+        private object Resolve(Component component)
+        {
+            component.LiftTimeScope.ComponentExecuted += componentfactory.MemberInfo;
+            component.LiftTimeScope.ComponentExecuted += componentfactory.Methods;
+            object obj=component.LiftTimeScope.CreateInstance(()=>{
+                return componentfactory.CreateInstance(component);
+            });
+            component.LiftTimeScope.ComponentExecuted -= componentfactory.MemberInfo;
+            component.LiftTimeScope.ComponentExecuted -= componentfactory.Methods;
+            return obj;
+        }
+
+
+        public object Resolve(Type type)
+        {
+            return Resolve(typeInstances[type].First());
         }
     }
 }

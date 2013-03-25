@@ -5,8 +5,10 @@ using System.Text;
 
 namespace LCW.Framework.Common.Ioc
 {
-    public interface IContainer :IResolve
+    public interface IResolve
     {
-        
+        T Resolve<T>();
+        T Resolve<T>(string name);
+        object Resolve(Type type);
     }
 }

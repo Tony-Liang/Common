@@ -24,5 +24,6 @@ namespace LCW.Framework.Common.Genernation.DataBases
             }
             return null;
         }
+        //connection.GetSchema("resource")
     }
 }

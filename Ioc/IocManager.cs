@@ -5,33 +5,32 @@ using System.Text;
 
 namespace LCW.Framework.Common.Ioc
 {
-    public class IocManager
+    public class IocManager:IocContainer
     {
-        private IContainer container;
-        public IContainer Container
+
+        public IContainer Build()
         {
-            get
-            {
-                return container;
-            }
-        }
-        public static IocManager Instance
-        {
-            get
-            {
-                return IocWrapper.ioc;
-            }
+            throw new NotImplementedException();
         }
 
-        #region #Nested
-        private class IocWrapper
+        public void Dispose()
         {
-            internal static IocManager ioc = new IocManager();
-            static IocWrapper()
-            {
-                ioc.container = new Container();
-            }           
+            throw new NotImplementedException();
         }
-        #endregion
+
+        public IComponent Register<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IComponent Register<TContract, TImplementation>() where TImplementation : TContract
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Resolve<T>()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

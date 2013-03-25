@@ -5,8 +5,10 @@ using System.Text;
 
 namespace LCW.Framework.Common.Ioc
 {
-    public interface IContainer :IResolve
+    public interface ILiftTimeScope
     {
-        
+        event Executed ComponentExecuted; 
+        object CreateInstance(Func<object> func);
     }
+
 }

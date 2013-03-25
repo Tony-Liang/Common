@@ -5,8 +5,8 @@ using System.Text;
 
 namespace LCW.Framework.Common.Ioc
 {
-    public interface IContainer :IResolve
+    internal interface IComponentInterpreter
     {
-        
+        object Execute(Component component);
     }
 }
