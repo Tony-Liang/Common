@@ -8,8 +8,10 @@ namespace LCW.Framework.Common.Ioc
     public class ContaineraBuilder : IocContainer
     {
         private readonly IList<Action<Multimap<Type, Component>>> actions = new List<Action<Multimap<Type, Component>>>();
-
-        public IContainer Build()
+		
+		private readonly Multimap<Type,Component> dependent = new Multimap<Type,Component>();
+        
+		public IContainer Build()
         {
             var build = new Container(new ReferenceFactory());
             Building(build.typeInstances);
@@ -18,10 +20,18 @@ namespace LCW.Framework.Common.Ioc
 
         private void Building(Multimap<Type, Component> list)
         {
+			list.Clear();
             foreach (var action in actions)
             {
                 action(list);
             }
+			foreach(var f in dependent.Keys)
+			{
+				foreach(var l in list[f])
+				{
+					l.Dependent.AddRange(dependent[f]);
+				}
+			}
         }
 
         public void Dispose()
@@ -31,18 +41,21 @@ namespace LCW.Framework.Common.Ioc
 
         public IComponent Register<T>()
         {
-            var component=new Component(typeof(T));
+			var component = new ComponentFacade(typeof(T));
             actions.Add((p) =>
             {
-                p.Add(typeof(T),component);
+				p.Add(typeof(T),component.CreateComponent(dependent));
             });
             return component;
         }
 
         public IComponent Register<TContract, TImplementation>() where TImplementation : TContract
         {
-            var component=this.Register<TContract>();
-            component.Implement<TImplementation>();
+			var component = new ComponentFacade(typeof(TContract),typeof(TImplementation));
+			actions.Add((p) =>
+			{
+				p.Add(typeof(TContract),component.CreateComponent(dependent));
+			});
             return component;
         }
     }

@@ -8,5 +8,13 @@ namespace LCW.Framework.Common.Ioc
     public interface IBindingTarget
     {
         Type Type { get;}
+		InjectProperty[] Property
+		{
+			get;
+		}
+		InjectMethod[] Method
+		{
+			get;
+		}
     }
 }

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace LCW.Framework.Common.Ioc
 {
-    public abstract class ComponentFactory
+    internal abstract class ComponentFactory
     {
         private IContainer container;
         public IContainer Container
@@ -25,22 +25,22 @@ namespace LCW.Framework.Common.Ioc
             return null;
         }
 
-        public virtual void MemberInfo(object obj)
+		public virtual void MemberInfo(object obj,InjectProperty[] InjectPropertys)
         {
 
         }
 
-        public virtual void Methods(object obj)
+		public virtual void Methods(object obj,InjectMethod[] InjectMethods)
         {
         }
     }
 
-    public class ILFactory : ComponentFactory
+	internal class ILFactory: ComponentFactory
     {
 
     }
 
-    public class ReferenceFactory : ComponentFactory
+	internal class ReferenceFactory: ComponentFactory
     {
         public override object CreateInstance(Component component)
         {
@@ -51,7 +51,14 @@ namespace LCW.Framework.Common.Ioc
             {
                 if (construct.GetParameters().Count() > 0)
                 {
-                    object[] argments = construct.GetParameters().Select((p) => Container.Resolve(p.ParameterType)).ToArray();
+					object[] argments = construct.GetParameters().Select((p) =>
+					{
+						var com=component.Dependent.Find(g=>g.Target==p.ParameterType);
+						if(com != null)
+							return Container.Resolve(p.ParameterType,com.Alias);
+						else
+							return Container.Resolve(p.ParameterType);
+					}).ToArray();
                     obj= construct.Invoke(argments);
                 }
                 else
@@ -66,14 +73,137 @@ namespace LCW.Framework.Common.Ioc
             return obj;
         }
 
-        public override void MemberInfo(object obj)
+		public override void MemberInfo(object obj,InjectProperty[] InjectPropertys)
         {
-            base.MemberInfo(obj);
+			if(InjectPropertys != null && InjectPropertys.Count() > 0)
+			{
+				foreach(var property in InjectPropertys)
+				{
+					PropertyInfo propertyInfo = obj.GetType().GetProperty(property.Name,BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance);
+					if(propertyInfo != null && propertyInfo.CanWrite)
+					{
+						object tempobj = null;
+						if(property.Value == null)
+						{
+							if(property.Source != null)
+								tempobj = Container.Resolve(property.Target,property.Source);
+							else if(property.Target != null)
+								tempobj = Container.Resolve(property.Target);
+							else
+								tempobj = Container.Resolve(propertyInfo.PropertyType);
+						}
+						else
+						{
+							tempobj = property.Value;
+						}
+						propertyInfo.SetValue(obj,tempobj,null);
+					}
+				}
+			}
         }
 
-        public override void Methods(object obj)
+		public override void Methods(object obj,InjectMethod[] InjectMethods)
         {
-            base.Methods(obj);
+			if(InjectMethods != null && InjectMethods.Count() > 0)
+			{
+				foreach(var m in InjectMethods)
+				{
+					MethodInfo methodInfo = obj.GetType().GetMethod(m.Name,BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+					methodInfo.Invoke(obj,m.Argments);
+				}
+			}
         }
     }
+
+	public abstract class AbstractInject
+	{
+		private string name;
+		public virtual string Name
+		{
+			get
+			{
+				return name;
+			}
+		}
+
+		public AbstractInject(string name)
+		{
+			this.name = name;
+		}
+	}
+
+	public class InjectProperty: AbstractInject
+	{
+		private Type target;
+		private Type source;
+		private object value;
+		public Type Target
+		{
+			get
+			{
+				return target;
+			}
+		}
+		public Type Source
+		{
+			get
+			{
+				return source;
+			}
+		}
+		public object Value
+		{
+			get
+			{
+				return value;
+			}
+		}
+
+		public InjectProperty(string name,Type target):this(name)
+		{
+			this.target = target;
+		}
+
+		public InjectProperty(string name,Type TContract,Type TImplementation)
+			: this(name)
+		{
+			target = TContract;
+			source = TImplementation;
+		}
+
+		public InjectProperty(string name,object value):this(name)			
+		{
+			this.value = value;
+		}
+
+		public InjectProperty(string name)
+			: base(name)
+		{
+
+		}
+	}
+
+	public class InjectMethod: AbstractInject
+	{
+		public InjectMethod(string name)
+			: base(name)
+		{
+
+		}
+
+		public InjectMethod(string name,params object[] argments)
+			: base(name)
+		{
+			this.argments = argments;
+		}
+
+		private object[] argments;
+		public object[] Argments
+		{
+			get
+			{
+				return argments;
+			}
+		}
+	}
 }
