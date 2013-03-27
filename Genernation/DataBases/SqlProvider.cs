@@ -6,6 +6,9 @@ using System.Data.Common;
 using LCW.Framework.Common.Genernation.DataBases.Entities;
 using System.Data.SqlClient;
 using System.Data;
+using Microsoft.SqlServer.Server;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
 
 namespace LCW.Framework.Common.Genernation.DataBases
 {
@@ -96,6 +99,33 @@ namespace LCW.Framework.Common.Genernation.DataBases
                     {
                         message = reader["Text"].ToString();
                     }
+                }
+            }
+            return message;
+        }
+
+        public override string OpenTable(string database, string table)
+        {
+            string message = string.Empty;
+            using (SqlConnection connection = new SqlConnection(this.DbConnectionStringBuilder.ConnectionString))
+            {
+                Server server = new Server(new ServerConnection(connection));
+                server.ConnectionContext.Connect();
+                Table temp = server.Databases[database].Tables[table];
+                //初始化Scripter 
+                Scripter a = new Scripter(server);
+                a.Options.Add(ScriptOption.DriAllConstraints);
+                a.Options.Add(ScriptOption.DriAllKeys);
+                a.Options.Add(ScriptOption.Default);
+                a.Options.Add(ScriptOption.ContinueScriptingOnError);
+                a.Options.Add(ScriptOption.ConvertUserDefinedDataTypesToBaseType);
+                a.Options.Add(ScriptOption.IncludeIfNotExists);
+                UrnCollection collection = new UrnCollection();
+                collection.Add(temp.Urn);
+                var sqls = a.Script(collection);
+                foreach (var s in sqls)
+                {
+                    message += s;
                 }
             }
             return message;

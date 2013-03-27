@@ -26,7 +26,7 @@ namespace LCW.Framework.Common.Genernation.DataBases
         public abstract string OpenProcedure(string procedure);
         public abstract string OpenTriggers(string triggers);
         public abstract string OpenView(string view);
-
+        public abstract string OpenTable(string database, string table);
 
         public abstract IList<DataBaseEntity> GetDataBases(ServiceSite site);
         public abstract IList<TableEntity> GetTables(DataBaseEntity database);

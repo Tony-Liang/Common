@@ -102,6 +102,27 @@ namespace LCW.Framework.Common.Genernation.DataBases
             return message;
         }
 
+        public override string OpenTable(string database, string table)
+        {
+            string message = string.Empty;
+            using (MySqlConnection connection = new MySqlConnection(this.DbConnectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SHOW CREATE table " + table;
+                cmd.CommandType = CommandType.Text;
+                MySqlDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                if (reader != null && reader.HasRows)
+                {
+                    if (reader.Read())
+                    {
+                        message = reader["Create Table"].ToString();
+                    }
+                }
+            }
+            return message;
+        }
+
         public override IList<DataBaseEntity> GetDataBases(ServiceSite site)
         {
             IList<DataBaseEntity> list = null;
