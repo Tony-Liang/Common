@@ -9,6 +9,7 @@ using System.Data;
 using Microsoft.SqlServer.Server;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
+using System.Globalization;
 
 namespace LCW.Framework.Common.Genernation.DataBases
 {
@@ -181,26 +182,55 @@ namespace LCW.Framework.Common.Genernation.DataBases
         public override IList<ColumnEntity> GetColumns(TableEntity table)
         {
             IList<ColumnEntity> list = null;
+            DataTable columns = new DataTable();
+            columns.Locale = CultureInfo.CurrentCulture;
             using (SqlConnection connection = new SqlConnection(table.DbConnectionStringBuilder.ConnectionString))
             {
                 connection.Open();
-                DataTable columns = connection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, null, table.Name, null });
-                if (columns != null && columns.Rows.Count > 0)
+                SqlCommand command = connection.CreateCommand();                
+                command.CommandText = string.Format(CultureInfo.CurrentCulture, "SELECT TOP 1 * FROM {0}", table.Name);
+                using(IDataReader reader = command.ExecuteReader(CommandBehavior.KeyInfo))
                 {
-                    list = new List<ColumnEntity>();
-                    DataView dv = columns.DefaultView;
-                    dv.Sort = "ORDINAL_POSITION asc";
-                    foreach (DataRowView view in dv)
-                    {
-                        string name = string.Format("{0}", view["COLUMN_NAME"]);
-                        string description = string.Format("{0}({1})", view["COLUMN_NAME"], view["DATA_TYPE"]);
-                        ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder,name);
-                        column.Description = description;
-                        column.DataType = DbType.SqlParse(view["DATA_TYPE"].ToString());
-                        column.Table = table;
-                        list.Add(column);
-                    }
+                    columns = reader.GetSchemaTable();
+                    reader.Close();
                 }
+                #region
+                //DataTable columns = connection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, null, table.Name, null });
+                //if (columns != null && columns.Rows.Count > 0)
+                //{
+                //    list = new List<ColumnEntity>();
+                //    DataView dv = columns.DefaultView;
+                //    dv.Sort = "ORDINAL_POSITION asc";
+                //    foreach (DataRowView view in dv)
+                //    {
+                //        string name = string.Format("{0}", view["COLUMN_NAME"]);
+                //        string description = string.Format("{0}({1})", view["COLUMN_NAME"], view["DATA_TYPE"]);
+                //        ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder,name);
+                //        column.Description = description;
+                //        column.DataType = DbType.SqlParse(view["DATA_TYPE"].ToString());
+                //        column.Table = table;
+                //        list.Add(column);
+                //    }
+                //}
+                #endregion
+            }
+            if (columns != null)
+            {
+                list = new List<ColumnEntity>();
+                foreach (DataRow row in columns.Rows)
+                {
+                    ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder, row["ColumnName"].ToString());
+                    column.Description = string.Format("{0}({1})", row["ColumnName"].ToString(), row["DataTypeName"].ToString());
+                    column.AllowDBNull = bool.Parse(row["AllowDBNull"].ToString());
+                    column.DataType = (Type)row["DataType"];
+                    column.IsIdentity = (bool)row["IsIdentity"];
+                    column.IsPrimaryKey = (bool)row["IsKey"];
+                    column.IsReadOnly = (bool)row["IsReadOnly"];
+                    column.IsUnique = (bool)row["IsUnique"];
+                    column.Table = table;
+                    list.Add(column);
+                }
+                CheckForeignKeys(table, list);
             }
             return list;
         }
@@ -274,6 +304,92 @@ namespace LCW.Framework.Common.Genernation.DataBases
                 }
             }
             return list;
+        }
+
+        private void CheckForeignKeys(TableEntity table,IList<ColumnEntity> Columns)
+        {
+            #region
+            //string[] restrictions = new string[4] { null, null, table.Name, null };
+            //DataTable foreignKeys = null;
+            //DataTable tablekeys = null;
+            //string text1 = string.Format(CultureInfo.CurrentCulture, "SELECT * FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE where table_name = '{1}'", table.Name);
+            //using (SqlConnection connection = new SqlConnection(table.DbConnectionStringBuilder.ConnectionString))
+            //{
+            //    connection.Open();
+            //    foreignKeys = connection.GetSchema("ForeignKeys", restrictions);
+
+            //    SqlCommand command1 = new SqlCommand(text1,connection);
+            //    using (IDataReader reader = command1.ExecuteReader())
+            //    {
+            //        tablekeys=reader.GetSchemaTable();
+            //    }
+            //}
+                                  
+            //if (foreignKeys != null && Columns != null)
+            //{
+            //    foreach (DataRow row in foreignKeys.Rows)
+            //    {
+            //        foreach (ColumnEntity c in Columns)
+            //        {
+            //            if (row[""].ToString().Equals(c.Name))
+            //            {
+            //                c.IsForeignKey = true;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+            #endregion
+            StringBuilder text = new StringBuilder();
+            text.Append("SELECT ");
+            text.Append("Fk_Table = object_name(b.fkeyid) ,");
+            text.Append("FK_Column = (SELECT name FROM syscolumns WHERE colid = b.fkey AND id = b.fkeyid) ,");
+            text.Append("PK_Table   = object_name(b.rkeyid) ,");
+            text.Append("PK_Column   = (SELECT name FROM syscolumns WHERE colid = b.rkey AND id = b.rkeyid) ,");
+            text.Append("Cascade_Update   = ObjectProperty(a.id,'CnstIsUpdateCascade') ,");//级联更新
+            text.Append("Cascade_Delete   = ObjectProperty(a.id,'CnstIsDeleteCascade') ");//级联删除
+            text.Append("FROM sysobjects a ");
+            text.Append("JOIN sysforeignkeys b ON a.id = b.constid ");
+            text.Append("JOIN sysobjects c ON a.parent_obj = c.id ");
+            text.Append("WHERE a.xtype = 'F' AND c.xtype = 'U' and object_name(b.fkeyid)='{0}'");
+            DataTable list = new DataTable();
+            string[] str = { "Fk_Table", "FK_Column", "PK_Table", "PK_Column", "Cascade_Update", "Cascade_Delete" };
+            foreach (var s in str)
+            {
+                list.Columns.Add(new DataColumn(s));
+            }
+            using (SqlConnection connection = new SqlConnection(table.DbConnectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand command = connection.CreateCommand();
+                command.CommandText = string.Format(CultureInfo.CurrentCulture,text.ToString(), table.Name);
+                using (IDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                {
+                    while (reader.Read())
+                    {
+                        DataRow row = list.NewRow();
+                        row[0] = reader[0].ToString();
+                        row[1] = reader[1].ToString();
+                        row[2] = reader[2].ToString();
+                        row[3] = reader[3].ToString();
+                        list.Rows.Add(row);
+                    }
+                }
+            }
+            if (list != null)
+            {
+                foreach (DataRow row in list.Rows)
+                {
+                    foreach (ColumnEntity temp in Columns)
+                    {
+                        if (temp.Name.Equals(row["FK_Column"].ToString()))
+                        {
+                            temp.IsForeignKey = true;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 using LCW.Framework.Common.Genernation.DataBases.Entities;
 using System.Data.SqlClient;
 using System.Data;
+using System.Globalization;
 
 namespace LCW.Framework.Common.Genernation.DataBases
 {
@@ -173,24 +174,73 @@ namespace LCW.Framework.Common.Genernation.DataBases
         public override IList<ColumnEntity> GetColumns(TableEntity table)
         {
             IList<ColumnEntity> list = null;
+            DataTable columns = new DataTable();
+            columns.Locale = CultureInfo.CurrentCulture;
+            DataTable keycolumns = new DataTable();
+            keycolumns.Locale = CultureInfo.CurrentCulture;
             using (MySqlConnection connection = new MySqlConnection(table.DbConnectionStringBuilder.ConnectionString))
             {
                 connection.Open();
-                DataTable columns = connection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, null, table.Name, null });
-                if (columns != null && columns.Rows.Count > 0)
+                #region
+                //DataTable columns = connection.GetSchema(SqlClientMetaDataCollectionNames.Columns, new string[] { null, null, table.Name, null });
+                //if (columns != null && columns.Rows.Count > 0)
+                //{
+                //    list = new List<ColumnEntity>();
+                //    DataView dv = columns.DefaultView;
+                //    dv.Sort = "ORDINAL_POSITION asc";
+                //    foreach (DataRowView view in dv)
+                //    {
+                //        string name = string.Format("{0}",view["COLUMN_NAME"]);
+                //        string description = string.Format("{0}({1})", view["COLUMN_NAME"], view["DATA_TYPE"]);
+                //        ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder,name);
+                //        column.Description = description;
+                //        column.DataType = DbType.MySqlParse(view["DATA_TYPE"].ToString());
+                //        column.Table = table;
+                //        list.Add(column);
+                //    }
+                //}
+                #endregion
+                keycolumns = connection.GetSchema("Foreign Key Columns", new string[] { null, null, table.Name, null });
+                MySqlCommand command = connection.CreateCommand();
+                command.CommandText = string.Format(CultureInfo.CurrentCulture, "SELECT * FROM {0} limit 1", table.Name);
+                using (IDataReader reader = command.ExecuteReader(CommandBehavior.KeyInfo))
                 {
-                    list = new List<ColumnEntity>();
-                    DataView dv = columns.DefaultView;
-                    dv.Sort = "ORDINAL_POSITION asc";
-                    foreach (DataRowView view in dv)
+                    columns = reader.GetSchemaTable();
+                    reader.Close();
+                }
+            }
+            if (columns != null)
+            {
+                list = new List<ColumnEntity>();
+                foreach (DataRow row in columns.Rows)
+                {
+                    ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder, row["ColumnName"].ToString());
+                    column.Description = string.Format("{0}", row["ColumnName"].ToString());
+                    column.AllowDBNull = bool.Parse(row["AllowDBNull"].ToString());
+                    column.DataType = (Type)row["DataType"];
+                    column.IsIdentity = (bool)row["IsAutoIncrement"];
+                    column.IsPrimaryKey = (bool)row["IsKey"];
+                    column.IsReadOnly = (bool)row["IsReadOnly"];
+                    column.IsUnique = (bool)row["IsUnique"];
+                    column.Table = table;
+                    list.Add(column);
+                }
+                if (keycolumns != null && keycolumns.Rows.Count > 0)
+                {
+                    foreach (DataRow row in keycolumns.Rows)
                     {
-                        string name = string.Format("{0}",view["COLUMN_NAME"]);
-                        string description = string.Format("{0}({1})", view["COLUMN_NAME"], view["DATA_TYPE"]);
-                        ColumnEntity column = new ColumnEntity(table.DbConnectionStringBuilder,name);
-                        column.Description = description;
-                        column.DataType = DbType.MySqlParse(view["DATA_TYPE"].ToString());
-                        column.Table = table;
-                        list.Add(column);
+                        foreach (ColumnEntity c in list)
+                        {
+                            if (c.Name.Equals(row["COLUMN_NAME"].ToString()))
+                            {
+                                c.IsForeignKey = true;
+                                break;
+                            }
+                        }
+                        //TABLE_NAME
+                        //COLUMN_NAME
+                        //REFERENCED_TABLE_NAME
+                        //REFERENCED_COLUMN_NAME
                     }
                 }
             }
@@ -266,6 +316,14 @@ namespace LCW.Framework.Common.Genernation.DataBases
                 }
             }
             return list;
+        }
+
+        private void Check(IList<ColumnEntity> list)
+        {
+            if (list != null)
+            {
+
+            }
         }
     }
 }

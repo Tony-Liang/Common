@@ -15,7 +15,7 @@ namespace LCW.Framework.Common.Genernation.DataBases
             site = new ServiceSite(connectionstringbuilder, service);
             return site;
         }
-
+        
         public static ServiceSite GetInstance()
         {
             if (site != null)

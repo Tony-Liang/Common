@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace LCW.Framework.Common.Genernation.DataBases.Entities
 {
-    public class ViewEntity:BaseEntity
+    public class ViewEntity : BaseEntity, IScript
     {
         public ViewEntity(DbConnectionStringBuilder connectionstringbuilder,string name, string description)
             : base(name, description)
@@ -27,17 +27,23 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
             }
         }
 
-        private string content;
-        public string Content
+        private string script;
+        public string Script
         {
             get
             {
-                if (string.IsNullOrEmpty(content))
+                if (string.IsNullOrEmpty(script))
                 {
-                    content = DbSchema.GetInstance(this.connectionstringbuilder).OpenView(this.name);
+                    script = DbSchema.GetInstance(this.connectionstringbuilder).OpenView(this.name);
                 }
-                return content;
+                return script;
             }
+        }
+
+        public override void Refresh()
+        {
+            this.script = null;
+            base.Refresh();
         }
     }
 }

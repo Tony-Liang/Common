@@ -43,5 +43,7 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
                 return connectionstringbuilder;
             }
         }
+
+        public virtual void Refresh() { }
     }
 }

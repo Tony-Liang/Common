@@ -6,7 +6,7 @@ using System.Data.Common;
 
 namespace LCW.Framework.Common.Genernation.DataBases.Entities
 {
-    public class TriggersEntity:BaseEntity
+    public class TriggersEntity : BaseEntity, IScript
     {
         public TriggersEntity(DbConnectionStringBuilder connectionstringbuilder,string name, string description)
             : base(name, description)
@@ -27,17 +27,23 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
             }
         }
 
-        private string content;
-        public string Content
+        private string script;
+        public string Script
         {
             get
             {
-                if (string.IsNullOrEmpty(content))
+                if (string.IsNullOrEmpty(script))
                 {
-                    content = DbSchema.GetInstance(this.connectionstringbuilder).OpenTriggers(this.name);
+                    script = DbSchema.GetInstance(this.connectionstringbuilder).OpenTriggers(this.name);
                 }
-                return content;
+                return script;
             }
+        }
+
+        public override void Refresh()
+        {
+            this.script = null;
+            base.Refresh();
         }
     }
 }

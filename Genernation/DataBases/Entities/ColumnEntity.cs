@@ -39,5 +39,83 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
                 type = value;
             }
         }
+
+        private bool isPrimaryKey;
+        public bool IsPrimaryKey
+        {
+            get
+            {
+                return isPrimaryKey;
+            }
+            internal set
+            {
+                isPrimaryKey = value;
+            }
+        }
+
+        private bool isForeignKey;
+        public bool IsForeignKey
+        {
+            get
+            {
+                return isForeignKey;
+            }
+            internal set
+            {
+                isForeignKey = value;
+            }
+        }
+
+        private bool isReadOnly;
+        public bool IsReadOnly
+        {
+            get
+            {
+                return isReadOnly;
+            }
+            internal set
+            {
+                isReadOnly = value;
+            }
+        }
+
+        private bool isIdentity;
+        public bool IsIdentity
+        {
+            get
+            {
+                return isIdentity;
+            }
+            internal set
+            {
+                isIdentity = value;
+            }
+        }
+
+        private bool allowDBNull;
+        public bool AllowDBNull
+        {
+            get
+            {
+                return allowDBNull;
+            }
+            internal set
+            {
+                allowDBNull = value;
+            }
+        }
+
+        private bool isUnique;
+        public bool IsUnique
+        {
+            get
+            {
+                return isUnique;
+            }
+            internal set
+            {
+                isUnique = value;
+            }
+        }
     }
 }

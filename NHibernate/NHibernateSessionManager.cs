@@ -50,9 +50,38 @@ namespace LCW.Framework.Common.NHibernate
             }
         }
 
+        public static void init(string filename)
+        {
+            try
+            {
+                Configuration cfg = new Configuration();
+                if (SessionFactory != null)
+                    throw new Exception("trying to init SessionFactory twice!");
+                cfg.Configure(filename);
+                SessionFactory = cfg.BuildSessionFactory();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+                throw new Exception("NHibernate initialization failed", ex);
+            }
+        }
+
         public static ISession OpenSession()
         {
             return SessionFactory.OpenSession();
+        }
+
+        public static ISession CurrentSession
+        {
+            get
+            {
+                if (CurrentSessionContext.HasBind(SessionFactory))
+                    return SessionFactory.GetCurrentSession();
+                ISession temp=OpenSession();
+                CurrentSessionContext.Bind(temp);
+                return temp;
+            }
         }
     }
     //NHibernateSessionManager.SessionFactory.GetCurrentSession()
@@ -96,6 +125,7 @@ namespace LCW.Framework.Common.NHibernate
                 finally
                 {
                     session.Close();
+                    session.Dispose();
                 }
             }
         }

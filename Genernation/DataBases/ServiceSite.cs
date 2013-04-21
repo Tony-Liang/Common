@@ -27,5 +27,11 @@ namespace LCW.Framework.Common.Genernation.DataBases
                 return databases;
             }
         }
+
+        public override void Refresh()
+        {
+            this.databases = null;
+            base.Refresh();
+        }
     }
 }

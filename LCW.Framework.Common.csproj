@@ -141,6 +141,7 @@
     <Compile Include="Genernation\DataBases\Entities\BaseEntity.cs" />
     <Compile Include="Genernation\DataBases\Entities\ColumnEntity.cs" />
     <Compile Include="Genernation\DataBases\Entities\DataBaseEntity.cs" />
+    <Compile Include="Genernation\DataBases\Entities\IScript.cs" />
     <Compile Include="Genernation\DataBases\Entities\ProcedureEntity.cs" />
     <Compile Include="Genernation\DataBases\Entities\TableEntity.cs" />
     <Compile Include="Genernation\DataBases\Entities\TriggersEntity.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Ioc\LiftTimeScope\ThreadScope.cs" />
     <Compile Include="Ioc\LiftTimeScope\TransientScope.cs" />
     <Compile Include="Ioc\Multimap.cs" />
+    <Compile Include="NHibernate\CriterionRequest.cs" />
     <Compile Include="NHibernate\IRepository.cs" />
     <Compile Include="NHibernate\NHibernateSessionManager.cs" />
     <Compile Include="NHibernate\NHSessionManager.cs" />

@@ -79,5 +79,12 @@ namespace LCW.Framework.Common.Genernation.DataBases.Entities
             }
         }
 
+        public override void Refresh()
+        {
+            this.tables = null;
+            this.triggers = null;
+            this.views = null;
+            this.procedures = null;
+        }
     }
 }

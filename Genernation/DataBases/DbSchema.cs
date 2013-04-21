@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 namespace LCW.Framework.Common.Genernation.DataBases
 {
-    internal class DbSchema
+    public class DbSchema
     {
         public static ProviderBuilder GetInstance(DbConnectionStringBuilder connectionstringbuilder)
         {
