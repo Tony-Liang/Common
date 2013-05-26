@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NHibernate;
 using NHibernate.Criterion;
+using System.Collections.Specialized;
 
 namespace LCW.Framework.Common.NHibernate
 {
@@ -33,72 +34,50 @@ namespace LCW.Framework.Common.NHibernate
             set;
         }
 
-        public System.Linq.Expressions.Expression<Func<ICriterion>>[] Criterias
+        private IList<System.Linq.Expressions.Expression<Func<ICriterion>>> expressions = new List<System.Linq.Expressions.Expression<Func<ICriterion>>>();
+
+        public System.Linq.Expressions.Expression<Func<ICriterion>>[] Expressions
         {
-            get;
-            set;
+            get
+            {
+                return expressions.ToArray();
+            }
         }
 
+        private IList<System.Linq.Expressions.Expression<Func<Order>>> orders = new List<System.Linq.Expressions.Expression<Func<Order>>>();
         public System.Linq.Expressions.Expression<Func<Order>>[] Orders
         {
-            get;
-            set;
+            get
+            {
+                return orders.ToArray();
+            }
+        }
+
+        internal NameValueCollection subCriteria = new NameValueCollection();
+
+        public CriterionRequest CreateCriteria(string associationPath, string alias)
+        {
+            if (!string.IsNullOrEmpty(associationPath))
+                subCriteria.Add(associationPath, alias);
+            return this;
+        }
+
+        public CriterionRequest Add(System.Linq.Expressions.Expression<Func<ICriterion>> expression)
+        {
+            expressions.Add(expression);
+            return this;
+        }
+
+        public CriterionRequest AddOrder(System.Linq.Expressions.Expression<Func<Order>> order)
+        {
+            orders.Add(order);
+            return this;
         }
     }
 
     public class CriterionRequest<T> : CriterionRequest
     {
         public new IEnumerable<T> DataList
-        {
-            get;
-            set;
-        }
-
-        public IEnumerable<CriterionAssociations> Associations
-        {
-            get;
-            set;
-        }
-    }
-
-    public class CriterionAssociations
-    {
-        public CriterionAssociations(string associationPath, string alias)
-        {
-            this.associationPath = associationPath;
-            this.alias = alias;
-        }
-
-        public CriterionAssociations(string associationPath)
-            : this(associationPath, associationPath)
-        {
-        }
-
-        private string associationPath;
-        public string AssociationPath
-        {
-            get
-            {
-                return associationPath;
-            }
-        }
-
-        private string alias;
-        public string Alias
-        {
-            get
-            {
-                return alias;
-            }
-        }
-
-        public System.Linq.Expressions.Expression<Func<ICriterion>>[] Criterias
-        {
-            get;
-            set;
-        }
-
-        public System.Linq.Expressions.Expression<Func<Order>>[] Orders
         {
             get;
             set;
