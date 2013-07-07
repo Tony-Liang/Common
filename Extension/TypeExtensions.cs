@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LCW.Framework.Common.DataTypes.Extension
+namespace LCW.Framework.Common.Extension
 {
     public static class TypeExtensions
     {

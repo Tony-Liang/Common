@@ -125,9 +125,8 @@
     <Compile Include="DataAccess\Sql\SqlDatabase.cs" />
     <Compile Include="DataAccess\TransactionScopeConnections.cs" />
     <Compile Include="DataAccess\WrappedAsyncOperation.cs" />
-    <Compile Include="DataTypes\Extension\DateTimeExtensions.cs" />
-    <Compile Include="DataTypes\Extension\StringExtensions.cs" />
-    <Compile Include="DataTypes\Extension\TypeExtensions.cs" />
+    <Compile Include="Extension\DateTimeExtensions.cs" />
+    <Compile Include="Extension\TypeExtensions.cs" />
     <Compile Include="DEncrypt\DEncrypt.cs" />
     <Compile Include="DEncrypt\DESEncrypt.cs" />
     <Compile Include="DEncrypt\HashEncode.cs" />
@@ -135,6 +134,8 @@
     <Compile Include="Driver\DBDriver.cs" />
     <Compile Include="Ensure.cs" />
     <Compile Include="ExpressionHelper.cs" />
+    <Compile Include="Extension\DictionaryExtension.cs" />
+    <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Genernation\DataBases\DataBaseSchema.cs" />
     <Compile Include="Genernation\DataBases\DbSchema.cs" />
     <Compile Include="Genernation\DataBases\DbType.cs" />
@@ -174,6 +175,12 @@
     <Compile Include="NHibernate\IRepository.cs" />
     <Compile Include="NHibernate\NHibernateSessionManager.cs" />
     <Compile Include="NHibernate\NHSessionManager.cs" />
+    <Compile Include="Provider\ExportFactory.cs" />
+    <Compile Include="Provider\ProviderFactoryInfo.cs" />
+    <Compile Include="Provider\ProviderKey.cs" />
+    <Compile Include="Resources\BuildManagerWrapper.cs" />
+    <Compile Include="Resources\IBuildManager.cs" />
+    <Compile Include="Resources\TypeCacheUtil.cs" />
     <Compile Include="SysFile\DirectoryHelper.cs" />
     <Compile Include="SysFile\FileHelper.cs" />
     <Compile Include="ObjectCloner.cs" />
@@ -215,6 +222,7 @@
     <Compile Include="Util\StringHelper.cs" />
     <Compile Include="Util\SysHelper.cs" />
     <Compile Include="Util\TimeSpanParseRuleAttribute.cs" />
+    <Compile Include="Web\HtmlFilter.cs" />
     <Compile Include="Web\RequestHelper.cs" />
     <Compile Include="Web\WebRequestHelper.cs" />
     <Compile Include="WMI\DiskInfo.cs" />
@@ -236,7 +244,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Setting\Languages.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DataTypes\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

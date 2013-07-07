@@ -5,7 +5,7 @@ using System.Text;
 using System.Globalization;
 using System.Collections.Specialized;
 
-namespace LCW.Framework.Common.DataTypes.Extension
+namespace LCW.Framework.Common.Extension
 {
     [Serializable]
     public class DateDescription
