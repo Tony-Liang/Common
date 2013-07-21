@@ -202,6 +202,7 @@
     <Compile Include="Util\ConfigurationHelper.cs" />
     <Compile Include="Util\ConvertHelper.cs" />
     <Compile Include="Util\CsvHelper.cs" />
+    <Compile Include="Util\DbHelperOleDb.cs" />
     <Compile Include="Util\EcanConvertToCh.cs" />
     <Compile Include="Util\FTPHelper.cs" />
     <Compile Include="Util\ImageHelper.cs" />
@@ -223,8 +224,13 @@
     <Compile Include="Util\StringHelper.cs" />
     <Compile Include="Util\SysHelper.cs" />
     <Compile Include="Util\TimeSpanParseRuleAttribute.cs" />
+    <Compile Include="Web\Cache.cs" />
+    <Compile Include="Web\ChineseSpell.cs" />
+    <Compile Include="Web\Cookie.cs" />
     <Compile Include="Web\HtmlFilter.cs" />
+    <Compile Include="Web\PageBar.cs" />
     <Compile Include="Web\RequestHelper.cs" />
+    <Compile Include="Web\StringUtility.cs" />
     <Compile Include="Web\WebRequestHelper.cs" />
     <Compile Include="WMI\DiskInfo.cs" />
     <Compile Include="WMI\IpInfo.cs" />
